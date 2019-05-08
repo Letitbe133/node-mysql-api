@@ -1,7 +1,11 @@
 // import crypto module for password encryption
 const crypto = require('crypto')
+
+// import knex config
+const knexConfig = require('./knexfile')
+
 // import knex
-const knex = require('knex') (require('./knexfile'))
+const knex = require('knex') (knexConfig)
 
 function createUser ({ username, password }) {
     console.log(`Adding user ${username}`)
