@@ -2,50 +2,16 @@
 const crypto = require('crypto')
 
 // import knex config
-const knexConfig = require('./knexfile')
+const knexConfig = require('./db/config')
 
 // import knex
 const knex = require('knex') (knexConfig)
 
-function createUser ({ username, password }) {
-    console.log(`Adding user ${username}`)
-    const { salt, hash } = saltHashPassword({password})
-
-    // Check if user exists in db
-    return knex('user').where({username})
-        .then( ([user]) => {
-            // if user exists send message and prevent inserting
-            if (user) {
-                console.log(result)
-                return { success: false, message: 'User already exists'}
-            } 
-            else {
-                // execute query and insert user
-                return knex('user').insert({
-                    salt,
-                    encrypted_password: hash,
-                    username
-                }).debug()
-            }
-        })
-}
-
-function deleteUser({id}) {
-    console.log(`Deleting user ${id}`)
-
-    return knex('user').where({id: id}).del().debug()
-        .then( (user) => {
-            if(user) {
-                return {success: true, Message: 'User successfully deleted from db' }
-            } else {
-                return { success: false, Message: 'User does not exist in db' }
-            }
-        })
-}
+const { saltHashPassword } = require('./utils/hashpasswd')
 
 function authenticate({ username, password }) {
     console.log(`Authenticating ${username}`)
-    return knex('user').where({ username }).debug()
+    return knex('user').where({ username })
         .then(([user]) => {
             // if no username found
             if (!user) return { success: false }
@@ -59,9 +25,44 @@ function authenticate({ username, password }) {
         })
 }
 
-function listAllUsers() {
+function createUser ({ username, password }) {
+    console.log(`Adding user ${username}`)
+    const { salt, hash } = saltHashPassword({password})
+
+    // Check if user exists in db
+    return knex('user').where({username})
+        .then( ([user]) => {
+            // if user exists send message and prevent inserting
+            if (user) {
+                return { success: false, message: 'User already exists'}
+            } 
+            else {
+                // execute query and insert user
+                return knex('user').insert({
+                    salt,
+                    encrypted_password: hash,
+                    username
+                })
+            }
+        })
+}
+
+function deleteUser({id}) {
+    console.log(`Deleting user ${id}`)
+
+    return knex('user').where({id}).del()
+        .then( (user) => {
+            if(user) {
+                return {success: true, Message: 'User successfully deleted from db' }
+            } else {
+                return { success: false, Message: 'User does not exist in db' }
+            }
+        })
+}
+
+function getUsers() {
     console.log('Listing all users')
-    return knex.select().table('user').debug()
+    return knex.select().table('user')
         .then( users => {
             return users
         })
@@ -69,58 +70,26 @@ function listAllUsers() {
 
 function getUser({id}) {
     console.log(`Retrieving user ${id}`)
-    return knex('user').where({ id : id }).debug()
-        .then( (user) => {
-            if (user) {
-                // return {success: true, Message: 'User successfully retrieved', User: user}
-                return {success: true, Message: 'User successfully retrieved', User: {id: user[0].id, name: user[0].username}}
-
+    return knex('user').where({ id })
+        .then( users => {
+            if (users.length) {
+                const [{ id, username: name}] = users
+                return {
+                    success: true,
+                    Message: `User successfully retrieved from db`,
+                    User: {
+                        id,
+                        name
+                    }
+                }
             }
         })
 }
 
-
-// function to hash password
-function saltHashPassword({
-    password,
-    salt = randomString()
-}) {
-    const hash = crypto
-        .createHmac('sha512', salt)
-        .update(password)
-
-    return {
-        salt,
-        hash: hash.digest('hex')
-    }
-}
-
-// function to generate random salt
-function randomString() {
-    return crypto.randomBytes(4).toString('hex')
-}
-
 module.exports = {
-    getUser,
-    createUser,
-    listAllUsers,
     authenticate,
+    createUser,
     deleteUser,
-    // getPublication,
-    // listComments,
-    // listUsers,
-    // updateUser,
-    // deleteUser,
-    // login,
-    // updatePublication,
-    // addPublicationMedia,
-    // deletePublication,
-    // createMediaComment,
-    // getPublicationComments,
-    // getComment,
-    // deleteComment,
-    // updateComment
+    getUsers,
+    getUser
 };
-
-
-module.exports;

@@ -7,7 +7,7 @@ CreateUser.addEventListener('submit', (e) => {
     e.preventDefault()
     const username = CreateUser.querySelector('.username').value
     const password = CreateUser.querySelector(' .password').value
-    post('/createUser', { username, password })
+    post('user/create', { username, password })
         .then(({ status }) => {
             if (status === 200) {
                 alert('user successfully created')
@@ -25,7 +25,7 @@ Login.addEventListener('submit', (e) => {
     const username = Login.querySelector('.username').value
     const password = Login.querySelector('.password').value
     console.log(password)
-    post('/login', { username, password })
+    post('/user/authenticate', { username, password })
         .then(({ status }) => {
             if ( status === 200) {
                 alert(`${username} succefully logged in`)
@@ -39,10 +39,10 @@ Login.addEventListener('submit', (e) => {
 const listBtn = document.querySelector('.listBtn')
 
 listBtn.addEventListener('click', () => {
-    get('/users/list')
-        .then( (response) => response.json())
+    get('/users/all')
+        .then( (res) => res.json())
         .then( (users) => {
-            console.log(users)
+            // console.log(users)
             const usersContainer = document.querySelector('.users-container')
             users.map( (user) => {
                 usersContainer.innerHTML += `<li>User name : ${user.username}<button class="delete-btn" data-id="${user.id}">Delete user</button></li>`
