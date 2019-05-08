@@ -1,0 +1,56 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    height: 100vh;
+}
+
+form h1 {
+    text-align: center;
+}
+
+form input, button {
+    margin: 0.5rem auto;
+    padding: 0.5rem 1rem;
+    font-size: 1.2rem;
+    border-radius: 25px;
+    border: 2px solid #ccc;
+
+}
+
+input[type = 'submit']{
+    box-shadow: 0px 0px 2px 2px #ccc;
+    transition: box-shadow 150ms ease;
+    border: none;
+    width: 50%;
+}
+
+input[type = 'submit']:hover, button:hover {
+    box-shadow: 0px 0px 0px 0px #ccc;
+    cursor: pointer;
+}
+
+button, button:active {
+    box-shadow: 0px 0px 2px 2px #ccc;
+    transition: box-shadow 150ms ease;
+    border: none;
+    outline: none;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-wrapper form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+}
+
+.users-container {
+    list-style: none;
+}
