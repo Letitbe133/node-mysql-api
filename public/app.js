@@ -7,7 +7,7 @@ CreateUser.addEventListener('submit', (e) => {
     e.preventDefault()
     const username = CreateUser.querySelector('.username').value
     const password = CreateUser.querySelector(' .password').value
-    post('user/create', { username, password })
+    post('/users', { username, password })
         .then(({ status }) => {
             if (status === 200) {
                 alert('user successfully created')
@@ -25,7 +25,7 @@ Login.addEventListener('submit', (e) => {
     const username = Login.querySelector('.username').value
     const password = Login.querySelector('.password').value
     console.log(password)
-    post('/user/authenticate', { username, password })
+    post('/login', { username, password })
         .then(({ status }) => {
             if ( status === 200) {
                 alert(`${username} succefully logged in`)
@@ -39,7 +39,7 @@ Login.addEventListener('submit', (e) => {
 const listBtn = document.querySelector('.listBtn')
 
 listBtn.addEventListener('click', () => {
-    get('/users/all')
+    get('/users')
         .then( (res) => res.json())
         .then( (users) => {
             // console.log(users)
@@ -55,7 +55,7 @@ listBtn.addEventListener('click', () => {
                 btn.addEventListener('click', (e) => {
                     id = e.target.dataset.id
 
-                    fetch(`/delete/${id}`, {
+                    fetch(`/user/${id}`, {
                         method: 'DELETE',
                         headers: {
                             'Accept': 'application/json',
@@ -72,7 +72,7 @@ listBtn.addEventListener('click', () => {
 
 // handle ajax POST request to api
 const post = (path, data) => {
-    console.log(JSON.stringify(data))
+    // console.log(JSON.stringify(data))
     return window.fetch(path,{
         method: 'POST',
         headers: {
