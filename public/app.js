@@ -6,8 +6,8 @@ const CreateUser = document.querySelector('.CreateUser')
 CreateUser.addEventListener('submit', (e) => {
     e.preventDefault()
     const username = CreateUser.querySelector('.username').value
-    const password = CreateUser.querySelector(' .password').value
-    post('/users', { username, password })
+    const password = CreateUser.querySelector('.password').value
+    post('/auth/signup', { username, password })
         .then(({ status }) => {
             if (status === 200) {
                 alert('user successfully created')
@@ -25,7 +25,7 @@ Login.addEventListener('submit', (e) => {
     const username = Login.querySelector('.username').value
     const password = Login.querySelector('.password').value
     console.log(password)
-    post('/login', { username, password })
+    post('/auth/login', { username, password })
         .then(({ status }) => {
             if ( status === 200) {
                 alert(`${username} succefully logged in`)
@@ -42,7 +42,6 @@ listBtn.addEventListener('click', () => {
     get('/users')
         .then( (res) => res.json())
         .then( (users) => {
-            // console.log(users)
             const usersContainer = document.querySelector('.users-container')
             users.map( (user) => {
                 usersContainer.innerHTML += `<li>User name : ${user.username}<button class="delete-btn" data-id="${user.id}">Delete user</button></li>`
@@ -55,7 +54,7 @@ listBtn.addEventListener('click', () => {
                 btn.addEventListener('click', (e) => {
                     id = e.target.dataset.id
 
-                    fetch(`/user/${id}`, {
+                    fetch(`/users/${id}`, {
                         method: 'DELETE',
                         headers: {
                             'Accept': 'application/json',
